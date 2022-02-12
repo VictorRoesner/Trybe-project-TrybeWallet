@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { currencyApiThunk } from '../actions';
+import { currencyApiThunk, saveExpenses } from '../actions';
 
 class Expenses extends React.Component {
   constructor() {
@@ -15,6 +15,7 @@ class Expenses extends React.Component {
         tag: 'Alimentação',
       },
     };
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -32,8 +33,11 @@ class Expenses extends React.Component {
     }));
   };
 
-  handleClick = () => {
-
+  handleClick() {
+    const { catchExpenses, fetchCurrency } = this.props;
+    const { expenses } = this.state;
+    fetchCurrency();
+    catchExpenses(expenses);
   }
 
   render() {
@@ -68,7 +72,7 @@ class Expenses extends React.Component {
             id="currency"
             onChange={ this.handleChange }
           >
-            {!money ? '' : money.map((currency) => (
+            {!money ? 0 : money.map((currency) => (
               <option key={ currency }>{currency}</option>
             ))}
           </select>
@@ -113,6 +117,7 @@ class Expenses extends React.Component {
 Expenses.propTypes = {
   money: PropTypes.arrayOf(PropTypes.string).isRequired,
   fetchCurrency: PropTypes.func.isRequired,
+  catchExpenses: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -121,6 +126,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchCurrency: () => dispatch(currencyApiThunk()),
+  catchExpenses: (expenses) => dispatch(saveExpenses(expenses)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Expenses);

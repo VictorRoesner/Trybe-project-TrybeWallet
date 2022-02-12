@@ -23,3 +23,10 @@ export function currencyApiThunk() {
     }
   };
 }
+
+export const SAVE_EXPENSES = 'SAVE_EXPENSES';
+
+export const saveExpenses = (payload) => ({
+  type: SAVE_EXPENSES,
+  payload,
+});
