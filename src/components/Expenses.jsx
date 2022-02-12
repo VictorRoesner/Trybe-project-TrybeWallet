@@ -11,7 +11,7 @@ class Expenses extends React.Component {
         value: 0,
         description: '',
         currency: 'BRL',
-        payMethod: 'Dinheiro',
+        method: 'Dinheiro',
         tag: 'Alimentação',
       },
     };
@@ -33,21 +33,29 @@ class Expenses extends React.Component {
     }));
   };
 
-  handleClick() {
+  handleClick = async () => {
     const { catchExpenses, fetchCurrency } = this.props;
     const { expenses } = this.state;
     fetchCurrency();
     catchExpenses(expenses);
+    this.setState((prevState) => ({
+      expenses: {
+        ...prevState.expenses,
+        value: 0,
+      },
+    }));
   }
 
   render() {
     const { money } = this.props;
+    const { expenses: { value } } = this.state;
     return (
       <form>
         <label htmlFor="value">
           Valor:
           <input
             type="number"
+            value={ value }
             data-testid="value-input"
             id="value"
             name="value"
@@ -72,17 +80,17 @@ class Expenses extends React.Component {
             id="currency"
             onChange={ this.handleChange }
           >
-            {!money ? 0 : money.map((currency) => (
+            {!money ? '' : money.map((currency) => (
               <option key={ currency }>{currency}</option>
             ))}
           </select>
         </label>
-        <label htmlFor="payMethod">
+        <label htmlFor="method">
           Método de pagamento:
           <select
-            name="payMethod"
+            name="method"
             data-testid="method-input"
-            id="payMethod"
+            id="method"
             onChange={ this.handleChange }
           >
             <option>Dinheiro</option>
